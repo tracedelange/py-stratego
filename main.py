@@ -5,15 +5,26 @@ import pygame
 import random
 import resources
 
+#Move screen height over - lets figure this out
+#screenWidth = 700
+#screenHeight = 700
 
-# basic constants to set up your game
-WIDTH = 100
-HEIGHT = 100
 
-MARGIN = 2
+#TODO adjust text heights to scale with screen size as defined here
+
+#Constants (Keep width and height even numbers)
+WIDTH = 80
+HEIGHT = 80
+MARGIN = 1
+
+#Top left cor, Top right cor, Bot left cor, bot right cor
+sidebarDims = [((WIDTH+MARGIN)*10), (((WIDTH+MARGIN)+(int(WIDTH/2)))*10)]
+
+BURGUNDY = pygame.Color("#c39b77")
 
 FPS = 30
 BGCOLOR = (255,255,255)
+
 
 # initialize pygame
 pygame.init()
@@ -21,7 +32,7 @@ pygame.init()
 
 # create the game window and set the title
 
-screen = pygame.display.set_mode((1022, 1022))
+screen = pygame.display.set_mode((((WIDTH+MARGIN)+(int(WIDTH/2)))*10, ((HEIGHT+MARGIN)*10)))
 pygame.display.set_caption("Stratego")
 
 
@@ -39,9 +50,10 @@ textRect = text.get_rect()
 clock = pygame.time.Clock()
 
 #Generate Grid
-grid = resources.generate_grid(10,10)
+field_grid = resources.generate_grid(10,10)
+side_grid = resources.generate_sidebar()
 
-print(grid)
+print("Running")
 
 # set the 'running' variable to False to end the game
 running = True
@@ -59,8 +71,10 @@ while running:
             if event.key == pygame.K_q:
                 running = False
 
+
         elif event.type == pygame.MOUSEBUTTONDOWN: # User clicks the mouse. Get the position
             pos = pygame.mouse.get_pos() # Change the x/y screen coordinates to grid coordinates
+
             column = pos[0] // (WIDTH + MARGIN)
             row = pos[1] // (HEIGHT + MARGIN)
 
@@ -69,22 +83,27 @@ while running:
             #except:
                 #continue
             
-            #x = ((MARGIN + (WIDTH + WIDTH / 2) * column + MARGIN))
-            #y = ((MARGIN + HEIGHT) * row + MARGIN)
 
             x = (WIDTH/2 + (WIDTH + MARGIN) * column) + font_size/15
             y = (HEIGHT/2 + (HEIGHT + MARGIN) * row) + font_size/15
             
             textRect.center = (x, y)
 
-            print(x, y)
-            
+            print(x,y)
 
             #If you click the margin out of bounds, ignore click
             
             # Set that location to one
-            print("Click ", pos, "Grid coordinates: ", row, column)
-            print("Grid value: " + str(grid[row][column]))
+            #print("Click ", pos, "Grid coordinates: ", row, column)
+
+            try:
+
+                print("Field Grid value: " + str(field_grid[row][column]))
+            except:
+                column = column - 10
+                #print("Side Grid value: " + str(side_grid[row][column]))
+                print(row, column)
+                print(resources.unit_sidebar_positions[(row,column)])
 
 
 
@@ -93,15 +112,21 @@ while running:
     # Game loop part 3: Draw #####
     screen.fill(BGCOLOR)
 
-    
-    
+    #Draw sidebar
+    pygame.draw.rect(screen,
+                (BURGUNDY),
+                [sidebarDims[0],
+                0,
+                WIDTH*10,
+                (HEIGHT+MARGIN)*10])
 
+    #Draw Field
     for row in range(10):
         for column in range(10):
             color = resources.WHITE
-            if grid[row][column] == 0:
+            if field_grid[row][column] == 0:
                 color = resources.BLUE
-            elif grid[row][column] == 1:
+            elif field_grid[row][column] == 1:
                 color = resources.GREEN
             pygame.draw.rect(screen,
                 color,

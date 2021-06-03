@@ -6,3 +6,9 @@ At the moment I have very little plans for how a computer player will be impleme
 
 Lets get to it!
 
+06/02/21 - Next TODO:
+create a function for displaying sidebar text where appropriate
+finish laying out the sidebar
+create a super intellegent AI capable of kicking my grandpas ass
+work on game mechanics and figure out how to place board from the sidebar
+look into replacing the icon with something less default
